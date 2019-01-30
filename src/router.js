@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import CitySearch from '@/components/CitySearch'
-import CurrentWeather from '@/components/CurrentWeather'
-import Forecast from '@/components/Forecast'
+import CitySearch from '@/views/CitySearch'
+import CurrentWeather from '@/views/CurrentWeather'
+import Forecast from '@/views/Forecast'
 
 Vue.use(Router)
 
