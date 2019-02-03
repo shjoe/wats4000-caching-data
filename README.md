@@ -4,7 +4,7 @@
 
 This project is designed to practice with caching data in `localStorage` using
 the `vue-ls` module to help us. The project builds on [the previous refactoring
-project](https://shawnr.gitbooks.io/practical-javascript-2-building-applications/content/application-architecture/project-application-architecture.html) where we enhanced the organization of a weather application. We will
+project](https://suwebdev.github.io/WATS-4000-gitbook/application-architecture/project-application-architecture.html) where we enhanced the organization of a weather application. We will
 work with a weather application that could have come out of that prior refactoring
 experience.
 
@@ -29,7 +29,7 @@ Look for the `TODO` notes for guidance and indications of how we can accomplish
 our goals.
 
 **Note:** Additional information about completing this project can be found in
-the [Practical JavaScript 2: Building Applications](https://shawnr.gitbooks.io/practical-javascript-2-building-applications/content/caching-data/project-caching-data.html) book.
+the [Practical JavaScript 2: Building Applications](https://suwebdev.github.io/WATS-4000-gitbook/caching-data/project-caching-data.html) book.
 
 **NOTE:** This project requires an API key from [OpenWeatherMap.org](https://openweathermap.org).
 
@@ -74,13 +74,11 @@ If we crave more challenge, we can attempt these additional goals.
 npm install
 
 # serve with hot reload at localhost:8080
-npm run dev
+npm run serve
 
 # build for production with minification
 npm run build
 
-# build for production and view the bundle analyzer report
-npm run build --report
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+For detailed explanation on how Vue works, check out the [guide](https://cli.vuejs.org/guide/) and [docs for vue-loader](https://cli.vuejs.org/config/#css-loaderoptions).
