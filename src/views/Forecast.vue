@@ -1,10 +1,20 @@
 <template>
   <div>
-    <h2>Five Day Hourly Forecast <span v-if="weatherData"> for {{ weatherData.city.name }}, {{weatherData.city.country }}</span></h2>
+    <h2>
+      Five Day Hourly Forecast
+      <span
+        v-if="weatherData"
+      >for {{ weatherData.city.name }}, {{weatherData.city.country }}</span>
+    </h2>
     <message-container v-bind:messages="messages"></message-container>
     <p>
-      <router-link to="/">Home</router-link> |
-      <router-link v-bind:to="{ name: 'CurrentWeather', params: { cityId: $route.params.cityId } }">Current Weather <span v-if="weatherData"> for {{ weatherData.city.name }}, {{weatherData.city.country }}</span></router-link>
+      <router-link to="/">Home</router-link>|
+      <router-link v-bind:to="{ name: 'CurrentWeather', params: { cityId: $route.params.cityId } }">
+        Current Weather
+        <span
+          v-if="weatherData"
+        >for {{ weatherData.city.name }}, {{weatherData.city.country }}</span>
+      </router-link>
     </p>
 
     <ul v-if="weatherData" class="forecast">
@@ -21,93 +31,115 @@
 </template>
 
 <script>
-import {API} from '@/common/api';
-import WeatherSummary from '@/components/WeatherSummary';
-import WeatherData from '@/components/WeatherData';
-import CubeSpinner from '@/components/CubeSpinner';
-import MessageContainer from '@/components/MessageContainer';
+import { API } from "@/common/api";
+import WeatherSummary from "@/components/WeatherSummary";
+import WeatherData from "@/components/WeatherData";
+import CubeSpinner from "@/components/CubeSpinner";
+import MessageContainer from "@/components/MessageContainer";
 
 export default {
-  name: 'Forecast',
+  name: "Forecast",
   components: {
-    'weather-summary': WeatherSummary,
-    'weather-data': WeatherData,
-    'message-container': MessageContainer,
-    'load-spinner': CubeSpinner
+    "weather-summary": WeatherSummary,
+    "weather-data": WeatherData,
+    "message-container": MessageContainer,
+    "load-spinner": CubeSpinner
   },
-  data () {
+  data() {
     return {
       weatherData: null,
       messages: [],
-      query: '',
+      query: "",
       showLoading: false,
       messages: []
+    };
+  },
+  created() {
+    this.showLoading = true;
+    let cacheLabel = "forecast_" + this.$route.params.cityId;
+    let cacheExpiry = 15 * 60 * 1000; // 15 minutes
+    if (this.$ls.get(cacheLabel)) {
+      console.log("Cached query detected.");
+      this.weatherData = this.$ls.get(cacheLabel);
+      this.showLoading = false;
+    } else {
+      API.get("forecast", {
+        params: {
+          id: this.$route.params.cityId
+        }
+      })
+        .then(response => {
+          this.showLoading = false;
+          this.weatherData = response.data;
+          this.$ls.set(cacheLabel, response.data, cacheExpiry);
+        })
+        .catch(error => {
+          this.showLoading = false;
+          this.messages.push({
+            type: "error",
+            text: error.message
+          });
+        });
     }
   },
-  created () {
-    this.showLoading = true;
-
-    // TODO: Cache these API results using the City ID as the label
-
-    // TODO: Create a cacheLabel value
-
-    // TODO: Create a cacheExpiry value set to 15 minutes in milliseconds
-
-    // TODO: Use a conditional to check if the API query has been cached
-    // If so, use that cached data
-    // If not, make the API call and cache the data with the cacheLabel and cacheExpiry defined above
-
-    API.get('forecast', {
-      params: {
-          id: this.$route.params.cityId
-      }
-    })
-    .then(response => {
-      this.showLoading = false;
-      this.weatherData = response.data;
-    })
-    .catch(error => {
-      this.showLoading = false;
-      this.messages.push({
-        type: 'error',
-        text: error.message
-      });
-    });
-  },
   filters: {
-    formatDate: function (timestamp){
+    formatDate: function(timestamp) {
       let date = new Date(timestamp * 1000);
-      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-      const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ];
+      const weekdays = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ];
       //let weekday = date.getDay();
       let daynum = date.getDate();
       let month = date.getMonth();
 
       let hour = date.getHours();
       if (hour === 12) {
-        hour = 'Noon';
+        hour = "Noon";
       } else if (hour === 0) {
-        hour = 'Midnight';
+        hour = "Midnight";
       } else if (hour > 12) {
-        hour = hour - 12 + 'PM';
+        hour = hour - 12 + "PM";
       } else if (hour < 12) {
-        hour = hour + 'AM';
+        hour = hour + "AM";
       }
       //let year = date.getFullYear();
-      return `${ months[month] } ${ daynum } @ ${ hour }`;
+      return `${months[month]} ${daynum} @ ${hour}`;
     }
   }
-}
+};
 </script>
 
 <style scoped>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 1s
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1s;
 }
-.fade-enter, .fade-leave-to {
-  opacity: 0
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
-h1, h2 {
+h1,
+h2 {
   font-weight: normal;
 }
 
